@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+# -*- encoding: utf-8 -*-
+
+len_of_argvs = ARGV.length
+
+if len_of_argvs
+  cp_dirctory = if len_of_argvs == 2 then "-cp #{ARGV[1]}" else '' end
+  case ARGV[0]
+    when 'neko'
+      puts <<-EOS
+#{cp_dirctory}
+-neko main.n
+-main Main
+      EOS
+    when 'js'
+      puts <<-EOS
+#{cp_dirctory}
+-js main.js
+-main Main
+# -dce full
+-debug
+      EOS
+    when 'cpp'
+      puts <<-EOS
+#{cp_dirctory}
+-cpp main.js
+-main Main
+-debug
+      EOS
+    else
+      puts <<-EOS
+Generate haxe build.hxml
+  inithaxe TARGET_LANG [source_dirctory]
+      EOS
+  end
+end
