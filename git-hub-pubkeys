@@ -1,0 +1,19 @@
+#/bin/sh -u
+set -e
+
+readonly DEFAULT_USER='hachibeeDI'
+
+if [ $# -ge 2 ]; then
+  echo 'too much arguments'
+  exit 1
+fi
+
+if [ -z $1 ]; then
+  # default user
+  readonly USER_NAME=$DEFAULT_USER
+else
+  readonly USER_NAME=$1
+fi
+
+readonly MY_SOURCE="https://github.com/${USER_NAME}.keys"
+curl $MY_SOURCE
