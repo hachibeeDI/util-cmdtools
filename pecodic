@@ -1,0 +1,71 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+from __future__ import (print_function, division, absolute_import, unicode_literals, )
+
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
+import csv
+from os import environ
+from sys import exit
+from io import open
+from subprocess import Popen, PIPE, STDOUT
+
+PART_OF_SPEECHS = {
+    'noun': '名詞',
+    'pronoun': '代名詞',
+    'verb': '動詞',
+    'modal': '助動詞',
+    'auxiliary': '代動詞',
+    'adjective': '形容詞',
+    'adverb': '副詞',
+    'proposition': '前置詞',
+    'conjunction': '接続詞',
+    'interjection': '感動詞',
+    '': '',
+}
+
+
+class JP(object):
+    NAMING = '~/.neobundle/codic-vim/dict/naming-entry.csv'.replace('~', environ['HOME'])
+    TRANSLATION = '~/.neobundle/codic-vim/dict/naming-translation.csv'.replace('~', environ['HOME'])
+
+
+def take_first(iterable):
+    from itertools import islice
+    return list(islice(iterable, 0, 1))[0]
+
+
+def extract_word_to_consult_dictionary():
+    with open(JP.NAMING) as f:
+        origins = tuple(csv.reader(f))
+    words = '\n'.join(row[1] for row in origins)
+    peco_filterd = Popen(["peco", '--query', '"$LBUFFER"'], stdin=PIPE, stdout=PIPE, stderr=STDOUT, shell=True)
+    result, err = peco_filterd.communicate(input=words)
+    result = result.strip()
+    if err:
+        print('err')
+        exit(1)
+    word_id = take_first(row[0] for row in origins if row[1] == result)
+    return word_id, result
+
+
+def get_result(word_id):
+    with open(JP.TRANSLATION) as f:
+        matched = [row for row in csv.reader(f) if row[0] == word_id]
+    return matched
+
+
+def pretty_result(targ, matched):
+    print(targ, '=>')
+    for m in matched:
+        print('  ', PART_OF_SPEECHS[m[2]], ':', m[3])
+        if m[4]:
+            print('  ', '  ☆ : ', m[4])
+        print()
+
+
+if __name__ == '__main__':
+    id, targ = extract_word_to_consult_dictionary()
+    pretty_result(targ, get_result(id))
