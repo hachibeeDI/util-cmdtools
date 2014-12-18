@@ -1,0 +1,4 @@
+#!/bin/zsh
+
+git show `git blame "$1" |sed -e 's/\^//g' |peco |awk '{print $1}'`
+
