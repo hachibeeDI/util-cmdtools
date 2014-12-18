@@ -1,0 +1,19 @@
+#!/usr/local/bin/python
+# -*- coding: utf-8 -*-
+from __future__ import (print_function, division, absolute_import, unicode_literals, )
+
+import io
+import re
+import sys
+from subprocess import check_output
+
+
+with io.open(sys.argv[1], 'wt') as f:
+    f.write('')
+
+branch_name = unicode(check_output('git rev-parse --abbrev-ref HEAD', shell=True), 'utf-8')
+numbers_in_branch = re.findall(r'\d+', branch_name)
+if numbers_in_branch:
+    ticket_id = max(numbers_in_branch, key=int)
+    with io.open(sys.argv[1], 'wt') as f:
+        f.write('refs #{0}\n\n\n'.format(ticket_id))
