@@ -1,8 +1,0 @@
-#!/bin/sh
-
-ORIGIN_OF_REDMINE="http://10.30.158.201"
-
-
-issuenum=`git --no-pager log --no-merges --decorate=no --oneline | awk '{if ($0 ~ /#[0-9]/) print $0}' |peco | sed -e "s/.\+ \(#[0-9]\+\) .\+/\1/g" | sed -e "s/#//"`
-
-open "$ORIGIN_OF_REDMINE/issues/$issuenum"
