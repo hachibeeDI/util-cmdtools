@@ -1,0 +1,4 @@
+#!/bin/bash
+
+## prune all branchs which are already merged
+git branch --merged | grep -v '*' | grep -v 'develop' | grep -v 'master' | xargs -I % git branch -d %
