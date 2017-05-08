@@ -1,0 +1,3 @@
+#!/bin/bash
+
+git push $1 $(git branch --contains=HEAD | sed "s/\* //")
